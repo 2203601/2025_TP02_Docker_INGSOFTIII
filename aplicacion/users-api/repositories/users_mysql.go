@@ -4,10 +4,12 @@ import (
 	//"errors"
 	"fmt"
 	"log"
+	"os"
 	"proyecto_arqui_soft_2/users-api/dao"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type MySQLConfig struct {
@@ -46,8 +48,17 @@ func NewMySQL(config MySQLConfig) MySQL {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		config.Username, config.Password, config.Host, config.Port, config.Database)
 
+	var logLevel logger.LogLevel
+	if os.Getenv("APP_ENV") == "qa" {
+		logLevel = logger.Info
+	} else {
+		logLevel = logger.Silent
+	}
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logLevel),
+	})
 	// Open connection to MySQL using GORM
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("failed to connect to MySQL: %s", err.Error())
 	}
