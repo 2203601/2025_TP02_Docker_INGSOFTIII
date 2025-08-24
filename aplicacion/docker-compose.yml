@@ -81,24 +81,54 @@ services:
     networks:
       - app-network
 
-  users-api:
+  #users-api QA
+  users-api-qa:
     image: users-api:latest
-    container_name: users-api-container
+    container_name: users-api-qa
     build:
       context: ./users-api
       dockerfile: Dockerfile
     command: /bin/sh -c "sleep 20 && until nc -z mysql 3306; do sleep 1; done && go run main.go"
     ports:
-      - "8081:8081"
+      - "8087:8081"
     depends_on:
       - mysql
       - memcached
     environment:
       - GO111MODULE=on
-      - DB_HOST = mysql
-      - DB_NAME = users-api
-      - DB_USER = root
-      - DB_PASSWORD  =  root1234
+      - ENV=QA
+      - APP_ENV=qa
+      - DB_HOST=mysql
+      - DB_NAME=users-api
+      - DB_USER=root
+      - DB_PASSWORD=root1234
+      - LOG_LEVEL=debug
+    networks:
+      - app-network
+    restart: on-failure
+    
+  # users-api PROD
+  users-api-prod:
+    image: users-api:latest
+    container_name: users-api-prod
+    build:
+      context: ./users-api
+      dockerfile: Dockerfile
+    command: /bin/sh -c "sleep 20 && until nc -z mysql 3306; do sleep 1; done && go run main.go"
+    ports:
+      - "8088:8081"
+    depends_on:
+      - mysql
+      - memcached
+    environment:
+      - GO111MODULE=on
+      - ENV=PROD
+      - APP_ENV=prod
+      - DB_HOST=mysql
+      - DB_NAME=users-api
+      - DB_USER=root
+      - DB_PASSWORD=root1234
+      - LOG_LEVEL=error
     networks:
       - app-network
     restart: on-failure
