@@ -83,7 +83,7 @@ services:
 
   #users-api QA
   users-api-qa:
-    image: users-api:latest
+    image: users-api:v1.0
     container_name: users-api-qa
     build:
       context: ./users-api
@@ -109,7 +109,7 @@ services:
     
   # users-api PROD
   users-api-prod:
-    image: users-api:latest
+    image: users-api:v1.0
     container_name: users-api-prod
     build:
       context: ./users-api
