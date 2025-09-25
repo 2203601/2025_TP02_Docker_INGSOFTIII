@@ -309,3 +309,4 @@ Como antes, para el versionado de imágenes, seguimos la semántica de (MAJOR.MI
 
 Por eso, con v1.0.0 hacemos referencia a una primera versión estable.
 
+-- cambio para sacar ss de logs --
